@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Smooth scrolling for navigation links
     const navLinks = document.querySelectorAll('nav a[href^="#"]');
 
     navLinks.forEach(link => {
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Header scroll effect
     window.addEventListener('scroll', function () {
         const header = document.querySelector('header');
         if (window.scrollY > 100) {
@@ -30,8 +32,57 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Theme Switcher
+    initThemeSwitcher();
+
     console.log('Website loaded successfully!');
 });
+
+function initThemeSwitcher() {
+    // Load saved theme or default to blue
+    const savedTheme = localStorage.getItem('theme') || 'blue';
+    setTheme(savedTheme);
+
+    // Add click handlers to theme options
+    const themeOptions = document.querySelectorAll('.theme-option');
+    themeOptions.forEach(option => {
+        option.addEventListener('click', function () {
+            const theme = this.getAttribute('data-theme');
+            setTheme(theme);
+            localStorage.setItem('theme', theme);
+        });
+    });
+}
+
+function setTheme(theme) {
+    // Set theme attribute on body
+    document.body.setAttribute('data-theme', theme);
+
+    // Update active state on theme options
+    const themeOptions = document.querySelectorAll('.theme-option');
+    themeOptions.forEach(option => {
+        if (option.getAttribute('data-theme') === theme) {
+            option.classList.add('active');
+        } else {
+            option.classList.remove('active');
+        }
+    });
+
+    // Update theme button title
+    const themeBtn = document.querySelector('.theme-btn');
+    const themeNames = {
+        'purple': 'สีม่วง',
+        'blue': 'สีน้ำเงิน',
+        'pink': 'สีชมพู',
+        'green': 'สีเขียว',
+        'orange': 'สีส้ม',
+        'white': 'สีขาว',
+        'minimal': 'มินิมอล'
+    };
+    if (themeBtn) {
+        themeBtn.setAttribute('title', themeNames[theme] || 'เปลี่ยนสี');
+    }
+}
 
 function copyToClipboard(text, button) {
     navigator.clipboard.writeText(text).then(function () {

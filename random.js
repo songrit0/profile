@@ -195,8 +195,58 @@ function spin() {
     }, 100);
 }
 
+// Theme Switcher
+function initThemeSwitcher() {
+    // Load saved theme or default to blue
+    const savedTheme = localStorage.getItem('theme') || 'blue';
+    setTheme(savedTheme);
+
+    // Add click handlers to theme options
+    const themeOptions = document.querySelectorAll('.theme-option');
+    themeOptions.forEach(option => {
+        option.addEventListener('click', function () {
+            const theme = this.getAttribute('data-theme');
+            setTheme(theme);
+            localStorage.setItem('theme', theme);
+        });
+    });
+}
+
+function setTheme(theme) {
+    // Set theme attribute on body
+    document.body.setAttribute('data-theme', theme);
+
+    // Update active state on theme options
+    const themeOptions = document.querySelectorAll('.theme-option');
+    themeOptions.forEach(option => {
+        if (option.getAttribute('data-theme') === theme) {
+            option.classList.add('active');
+        } else {
+            option.classList.remove('active');
+        }
+    });
+
+    // Update theme button title
+    const themeBtn = document.querySelector('.theme-btn');
+    const themeNames = {
+        'purple': 'สีม่วง',
+        'blue': 'สีน้ำเงิน',
+        'pink': 'สีชมพู',
+        'green': 'สีเขียว',
+        'orange': 'สีส้ม',
+        'white': 'สีขาว',
+        'minimal': 'มินิมอล'
+    };
+    if (themeBtn) {
+        themeBtn.setAttribute('title', themeNames[theme] || 'เปลี่ยนสี');
+    }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', function () {
+    // Initialize theme switcher
+    initThemeSwitcher();
+
     loadItems();
     displayItems();
     generateRollerItems();
@@ -229,6 +279,22 @@ document.addEventListener('DOMContentLoaded', function () {
             addItemForm.style.display = 'none';
             document.getElementById('itemIcon').value = '';
             document.getElementById('itemName').value = '';
+        });
+    }
+
+    // Emoji shortcut buttons
+    const emojiButtons = document.querySelectorAll('.emoji-btn');
+    if (emojiButtons.length > 0) {
+        emojiButtons.forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const emoji = this.getAttribute('data-emoji');
+                const iconInput = document.getElementById('itemIcon');
+                if (iconInput) {
+                    iconInput.value = emoji;
+                    iconInput.focus();
+                }
+            });
         });
     }
 
