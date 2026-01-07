@@ -812,3 +812,46 @@ footer {
         right: 0;
     }
 }
+
+/* Activate Windows Watermark */
+.activate-windows {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    pointer-events: none;
+    user-select: none;
+}
+
+.watermark-text {
+    color: rgba(255, 255, 255, 0.5);
+    font-family: 'Segoe UI', 'Noto Sans Thai', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.watermark-subtext {
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'Segoe UI', 'Noto Sans Thai', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.4;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .activate-windows {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    .watermark-text {
+        font-size: 16px;
+    }
+
+    .watermark-subtext {
+        font-size: 12px;
+    }
+}
