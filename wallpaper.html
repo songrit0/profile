@@ -5,6 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Interactive Topographic Wallpaper - แมวเป้า.dev_">
+    <!-- Open Graph / Social Preview -->
+    <meta property="og:title" content="Topographic Wallpaper — แมวเป้า.dev_">
+    <meta property="og:description" content="Interactive Topographic Wallpaper - สร้างลวดลายภูมิประเทศแบบ Interactive">
+    <meta property="og:image" content="https://songrit0.github.io/profile/screencapture-127-0-0-1-5500-wallpaper-html-2026-02-23-13_50_00.png">
+    <meta property="og:url" content="https://songrit0.github.io/profile/wallpaper.html">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Topographic Wallpaper — แมวเป้า.dev_">
+    <meta name="twitter:description" content="Interactive Topographic Wallpaper - สร้างลวดลายภูมิประเทศแบบ Interactive">
+    <meta name="twitter:image" content="https://songrit0.github.io/profile/screencapture-127-0-0-1-5500-wallpaper-html-2026-02-23-13_50_00.png">
     <title>Wallpaper — แมวเป้า.dev_</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -77,6 +87,11 @@
                     <span class="toolbar-checkbox-text">พิกัดเมาส์</span>
                 </label>
                 <label class="toolbar-checkbox">
+                    <input type="checkbox" id="crosshairToggle">
+                    <span class="toolbar-checkbox-mark"></span>
+                    <span class="toolbar-checkbox-text">เครื่องหมาย +</span>
+                </label>
+                <label class="toolbar-checkbox">
                     <input type="checkbox" id="watermarkToggle" checked>
                     <span class="toolbar-checkbox-mark"></span>
                     <span class="toolbar-checkbox-text">Activate Windows</span>
@@ -123,20 +138,20 @@
             </div>
             <!-- Row: ความหนาแน่น | จำนวนเส้นชั้นความสูง -->
             <div class="toolbar-section">
-                <label class="toolbar-label">ความหนาแน่น</label>
+                <label class="toolbar-label">ความหนาแน่น <span id="densityValue">1</span></label>
                 <input type="range" class="toolbar-range" id="densityRange" min="1" max="40" value="1">
             </div>
             <div class="toolbar-section">
-                <label class="toolbar-label">จำนวนเส้นชั้นความสูง</label>
+                <label class="toolbar-label">จำนวนเส้นชั้นความสูง <span id="contourValue">16</span></label>
                 <input type="range" class="toolbar-range" id="contourRange" min="2" max="40" value="16">
             </div>
             <!-- Row: ความเร็ว | รัศมีเมาส์ -->
             <div class="toolbar-section">
-                <label class="toolbar-label">ความเร็ว</label>
-                <input type="range" class="toolbar-range" id="speedRange" min="0" max="10" value="0">
+                <label class="toolbar-label">ความเร็ว <span id="speedValue">0</span></label>
+                <input type="range" class="toolbar-range" id="speedRange" min="0" max="10" step="0.01" value="0">
             </div>
             <div class="toolbar-section">
-                <label class="toolbar-label">รัศมีเมาส์</label>
+                <label class="toolbar-label">รัศมีเมาส์ <span id="radiusValue">0</span></label>
                 <input type="range" class="toolbar-range" id="radiusRange" min="0" max="400" value="0">
             </div>
             <div class="toolbar-actions">

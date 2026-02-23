@@ -20,7 +20,8 @@
         titleHidden: false,
         mode: 'dark',
         showCoords: false,
-        showWatermark: true
+        showWatermark: true,
+        showCrosshair: false
     };
 
     // === LocalStorage Persistence ===
@@ -37,7 +38,8 @@
             customBg: state.customBg,
             mode: state.mode,
             showCoords: state.showCoords,
-            showWatermark: state.showWatermark
+            showWatermark: state.showWatermark,
+            showCrosshair: state.showCrosshair
         };
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -59,6 +61,7 @@
             if (data.mode) state.mode = data.mode;
             if (data.showCoords !== undefined) state.showCoords = data.showCoords;
             if (data.showWatermark !== undefined) state.showWatermark = data.showWatermark;
+            if (data.showCrosshair !== undefined) state.showCrosshair = data.showCrosshair;
         } catch (e) { /* ignore */ }
     }
 
@@ -393,22 +396,24 @@
             ctx.fillRect(0, 0, w, h);
 
             // Crosshair
-            const chSize = 12;
-            ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(state.mouse.x - chSize, state.mouse.y);
-            ctx.lineTo(state.mouse.x + chSize, state.mouse.y);
-            ctx.moveTo(state.mouse.x, state.mouse.y - chSize);
-            ctx.lineTo(state.mouse.x, state.mouse.y + chSize);
-            ctx.stroke();
+            if (state.showCrosshair) {
+                const chSize = 12;
+                ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.2)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(state.mouse.x - chSize, state.mouse.y);
+                ctx.lineTo(state.mouse.x + chSize, state.mouse.y);
+                ctx.moveTo(state.mouse.x, state.mouse.y - chSize);
+                ctx.lineTo(state.mouse.x, state.mouse.y + chSize);
+                ctx.stroke();
 
-            // Ring
-            ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.06)';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.arc(state.mouse.x, state.mouse.y, state.mouseRadius, 0, Math.PI * 2);
-            ctx.stroke();
+                // Ring
+                ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.06)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(state.mouse.x, state.mouse.y, state.mouseRadius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
         }
 
         // Subtle vignette
@@ -550,6 +555,17 @@
 
     updateWatermarkVisibility();
 
+    // Crosshair toggle (checkbox)
+    const crosshairToggle = document.getElementById('crosshairToggle');
+
+    if (crosshairToggle) {
+        crosshairToggle.checked = state.showCrosshair;
+        crosshairToggle.addEventListener('change', function () {
+            state.showCrosshair = this.checked;
+            saveSettings();
+        });
+    }
+
     // Custom background color picker (declare early for mode toggle access)
     const customBgInput = document.getElementById('customBgInput');
     const customBgApply = document.getElementById('customBgApply');
@@ -617,20 +633,28 @@
         });
     }
 
+    // Value display elements
+    const densityValue = document.getElementById('densityValue');
+    const contourValue = document.getElementById('contourValue');
+    const speedValue = document.getElementById('speedValue');
+    const radiusValue = document.getElementById('radiusValue');
+
     // Density slider
     const densityRange = document.getElementById('densityRange');
     if (densityRange) {
         densityRange.addEventListener('input', function () {
             state.density = parseInt(this.value);
+            if (densityValue) densityValue.textContent = this.value;
             saveSettings();
         });
     }
 
-    // Speed slider 
+    // Speed slider
     const speedRange = document.getElementById('speedRange');
     if (speedRange) {
         speedRange.addEventListener('input', function () {
-            state.speed = parseInt(this.value);
+            state.speed = parseFloat(this.value);
+            if (speedValue) speedValue.textContent = this.value;
             saveSettings();
         });
     }
@@ -640,6 +664,7 @@
     if (radiusRange) {
         radiusRange.addEventListener('input', function () {
             state.mouseRadius = parseInt(this.value);
+            if (radiusValue) radiusValue.textContent = this.value;
             saveSettings();
         });
     }
@@ -649,6 +674,7 @@
     if (contourRange) {
         contourRange.addEventListener('input', function () {
             state.contours = parseInt(this.value);
+            if (contourValue) contourValue.textContent = this.value;
             saveSettings();
         });
     }
@@ -697,12 +723,17 @@
             state.mode = 'dark';
             state.showCoords = false;
             state.showWatermark = true;
+            state.showCrosshair = false;
 
             // Update UI
             if (densityRange) densityRange.value = 1;
             if (contourRange) contourRange.value = 16;
             if (speedRange) speedRange.value = 0;
             if (radiusRange) radiusRange.value = 0;
+            if (densityValue) densityValue.textContent = '1';
+            if (contourValue) contourValue.textContent = '16';
+            if (speedValue) speedValue.textContent = '0';
+            if (radiusValue) radiusValue.textContent = '0';
             if (customColorInput) customColorInput.value = '#06b6d4';
             if (customBgInput) customBgInput.value = '#030712';
             colorPresets.forEach(p => {
@@ -715,6 +746,7 @@
             if (titleOverlay) titleOverlay.classList.remove('hidden');
             updateCoordsVisibility();
             updateWatermarkVisibility();
+            if (crosshairToggle) crosshairToggle.checked = false;
 
             // Clear saved settings
             try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* ignore */ }
@@ -733,6 +765,16 @@
         if (speedRange) speedRange.value = state.speed;
         if (radiusRange) radiusRange.value = state.mouseRadius;
         if (contourRange) contourRange.value = state.contours;
+
+        // Update value displays
+        const densityValue = document.getElementById('densityValue');
+        const contourValue = document.getElementById('contourValue');
+        const speedValue = document.getElementById('speedValue');
+        const radiusValue = document.getElementById('radiusValue');
+        if (densityValue) densityValue.textContent = state.density;
+        if (contourValue) contourValue.textContent = state.contours;
+        if (speedValue) speedValue.textContent = state.speed;
+        if (radiusValue) radiusValue.textContent = state.mouseRadius;
 
         // Mode
         if (state.mode === 'light') {
