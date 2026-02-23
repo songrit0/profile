@@ -1,132 +1,189 @@
 <!DOCTYPE html>
-
 <html lang="th">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="GitHub Pages Website">
+    <meta name="description" content="โปรไฟล์ของแมวเป้า - เกมเมอร์ที่เขียนโปรแกรมได้นิดหน่อย">
     <!-- Open Graph / Social Preview -->
     <meta property="og:title" content="โปรไฟล์ไอ้แมวเป้า">
     <meta property="og:description" content="เกมเมอร์ที่เขียนโปรแกรมได้นิดหน่อย.">
-    <meta property="og:image" content="https://songrit0.github.io/profile/Screenshot%202026-01-07%20150206.png">
+    <meta property="og:image" content="https://songrit0.github.io/profile/Screenshot.png">
     <meta property="og:url" content="https://songrit0.github.io/profile/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="แมวเป้า.dev_">
     <meta name="twitter:description" content="เกมเมอร์ที่เขียนโปรแกรมได้นิดหน่อย.">
-    <meta name="twitter:image" content="https://songrit0.github.io/profile/Screenshot%202026-01-07%20150206.png">
+    <meta name="twitter:image" content="https://songrit0.github.io/profile/Screenshot.png">
     <title>โปรไฟล์ไอ้แมวเป้า</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Noto+Sans+Thai:wght@100..900&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&family=Noto+Sans+Thai:wght@100..900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <header>
+    <!-- Particle Background -->
+    <canvas id="particleCanvas"></canvas>
+
+    <header id="siteHeader">
         <nav>
             <div class="container">
-                <!-- <h1>My Website</h1> -->
-                <ul>
-                    <li><a href="#home">home</a></li>
-                    <li><a href="#about">about</a></li>
-                    <li><a href="#expertise">skill</a></li>
+                <a href="#home" class="nav-logo">แมวเป้า.dev_</a>
+                <ul id="navMenu">
+                    <li><a href="#home" class="active" data-section="home">home</a></li>
+                    <li><a href="#about" data-section="about">about</a></li>
+                    <li><a href="#expertise" data-section="expertise">skill</a></li>
                     <li><a href="random.html">random system</a></li>
-                    <li><a href="#contact">contact</a></li>
+                    <li><a href="#contact" data-section="contact">contact</a></li>
                 </ul>
-                <div class="theme-switcher">
-                    <button class="theme-btn" data-theme="purple" title="สีม่วง">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="5"></circle>
-                            <line x1="12" y1="1" x2="12" y2="3"></line>
-                            <line x1="12" y1="21" x2="12" y2="23"></line>
-                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                            <line x1="1" y1="12" x2="3" y2="12"></line>
-                            <line x1="21" y1="12" x2="23" y2="12"></line>
-                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                    </button>
-                    <div class="theme-dropdown">
-                        <button class="theme-option" data-theme="purple">
-                            <span class="theme-color"
-                                style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);"></span>
-                            <span>ม่วง</span>
+                <div class="nav-right">
+                    <div class="theme-switcher">
+                        <button class="theme-btn" data-theme="purple" title="สีม่วง" id="themeToggleBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <line x1="12" y1="1" x2="12" y2="3"></line>
+                                <line x1="12" y1="21" x2="12" y2="23"></line>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                <line x1="1" y1="12" x2="3" y2="12"></line>
+                                <line x1="21" y1="12" x2="23" y2="12"></line>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                            </svg>
                         </button>
-                        <button class="theme-option" data-theme="blue">
-                            <span class="theme-color"
-                                style="background: linear-gradient(135deg, #3b82f6, #60a5fa);"></span>
-                            <span>น้ำเงิน</span>
-                        </button>
-                        <button class="theme-option" data-theme="pink">
-                            <span class="theme-color"
-                                style="background: linear-gradient(135deg, #ec4899, #f472b6);"></span>
-                            <span>ชมพู</span>
-                        </button>
-                        <button class="theme-option" data-theme="green">
-                            <span class="theme-color"
-                                style="background: linear-gradient(135deg, #10b981, #34d399);"></span>
-                            <span>เขียว</span>
-                        </button>
-                        <button class="theme-option" data-theme="orange">
-                            <span class="theme-color"
-                                style="background: linear-gradient(135deg, #f97316, #fb923c);"></span>
-                            <span>ส้ม</span>
-                        </button>
-                        <button class="theme-option" data-theme="white">
-                            <span class="theme-color"
-                                style="background: linear-gradient(135deg, #c8c8c8, #e6e6e6);"></span>
-                            <span>ขาว</span>
-                        </button>
-                        <button class="theme-option" data-theme="minimal">
-                            <span class="theme-color"
-                                style="background: linear-gradient(135deg, #9ca3af, #d1d5db);"></span>
-                            <span>มินิมอล</span>
-                        </button>
+                        <div class="theme-dropdown" id="themeDropdown">
+                            <button class="theme-option" data-theme="purple">
+                                <span class="theme-color"
+                                    style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);"></span>
+                                <span>ม่วง</span>
+                            </button>
+                            <button class="theme-option" data-theme="blue">
+                                <span class="theme-color"
+                                    style="background: linear-gradient(135deg, #3b82f6, #60a5fa);"></span>
+                                <span>น้ำเงิน</span>
+                            </button>
+                            <button class="theme-option" data-theme="pink">
+                                <span class="theme-color"
+                                    style="background: linear-gradient(135deg, #ec4899, #f472b6);"></span>
+                                <span>ชมพู</span>
+                            </button>
+                            <button class="theme-option" data-theme="green">
+                                <span class="theme-color"
+                                    style="background: linear-gradient(135deg, #10b981, #34d399);"></span>
+                                <span>เขียว</span>
+                            </button>
+                            <button class="theme-option" data-theme="orange">
+                                <span class="theme-color"
+                                    style="background: linear-gradient(135deg, #f97316, #fb923c);"></span>
+                                <span>ส้ม</span>
+                            </button>
+                            <button class="theme-option" data-theme="white">
+                                <span class="theme-color"
+                                    style="background: linear-gradient(135deg, #c8c8c8, #e6e6e6);"></span>
+                                <span>ขาว</span>
+                            </button>
+                            <button class="theme-option" data-theme="minimal">
+                                <span class="theme-color"
+                                    style="background: linear-gradient(135deg, #9ca3af, #d1d5db);"></span>
+                                <span>มินิมอล</span>
+                            </button>
+                        </div>
                     </div>
+                    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
             </div>
         </nav>
     </header>
 
+    <!-- Mobile Nav Overlay -->
+    <div class="nav-overlay" id="navOverlay"></div>
+
     <main>
+        <!-- Hero Section -->
         <section id="home" class="hero">
+            <div class="hero-shapes">
+                <div class="hero-shape"></div>
+                <div class="hero-shape"></div>
+                <div class="hero-shape"></div>
+                <div class="hero-shape"></div>
+                <div class="hero-shape"></div>
+            </div>
             <div class="container">
-                <h2>แมวเป้า.dev<span class="cursor">_</span></h2>
-                <p>เกมเมอร์ที่เขียนโปรแกรมได้นิดหน่อย</p>
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="dot"></span>
+                        <span>Developer & Gamer</span>
+                    </div>
+                    <h1 style="font-size: 0; position: absolute; opacity: 0;">โปรไฟล์ของแมวเป้า - Web Developer</h1>
+                    <h2>แมวเป้า.dev<span class="cursor">_</span></h2>
+                    <p>เกมเมอร์ที่เขียนโปรแกรมได้นิดหน่อย</p>
+                    <div class="hero-cta">
+                        <a href="#contact" class="btn-primary" id="heroContactBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="m2 7 10 6 10-6" />
+                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                            </svg>
+                            <span>ติดต่อ</span>
+                        </a>
+                        <a href="#about" class="btn-ghost" id="heroAboutBtn">
+                            <span>เกี่ยวกับฉัน</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <div class="mouse"></div>
+                <span>SCROLL</span>
             </div>
         </section>
 
+        <div class="section-divider"></div>
+
+        <!-- About Section -->
         <section id="about" class="about">
             <div class="container">
-                <h2>About</h2>
+                <div class="section-header reveal">
+                    <h2>About</h2>
+                    <p>ข้อมูลเบื้องต้นเกี่ยวกับตัวผม</p>
+                </div>
                 <div class="info-grid">
-                    <div class="info-item">
+                    <div class="info-item reveal reveal-delay-1">
                         <span class="info-label">Name</span>
                         <span class="info-value">Songrit Lomthaisong</span>
                     </div>
-                    <div class="info-item">
+                    <div class="info-item reveal reveal-delay-2">
                         <span class="info-label">Born</span>
                         <span class="info-value">May 6, 200_</span>
                     </div>
-                    <div class="info-item">
+                    <div class="info-item reveal reveal-delay-3">
                         <span class="info-label">Nickname</span>
                         <span class="info-value">ฟลุ๊ค / แมว</span>
                     </div>
-                    <div class="info-item">
+                    <div class="info-item reveal reveal-delay-4">
                         <span class="info-label">Religion</span>
                         <span class="info-value">-</span>
                     </div>
-                    <div class="info-item">
+                    <div class="info-item reveal reveal-delay-5">
                         <span class="info-label">Nationality</span>
                         <span class="info-value">Thai</span>
                     </div>
-                    <div class="info-item">
+                    <div class="info-item reveal reveal-delay-6">
                         <span class="info-label">Sex</span>
                         <span class="info-value">Male</span>
                     </div>
@@ -134,11 +191,17 @@
             </div>
         </section>
 
+        <div class="section-divider"></div>
+
+        <!-- Skills Section -->
         <section id="expertise" class="expertise">
             <div class="container">
-                <h2>Skill</h2>
+                <div class="section-header reveal">
+                    <h2>Skill</h2>
+                    <p>เทคโนโลยีและเครื่องมือที่ผมใช้งาน</p>
+                </div>
                 <div class="skills-grid">
-                    <div class="skill-category">
+                    <div class="skill-category reveal reveal-delay-1">
                         <div class="skill-category-header">
                             <div class="skill-category-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -153,13 +216,13 @@
                         <div class="skill-tags">
                             <span class="skill-tag">JavaScript</span>
                             <span class="skill-tag">TypeScript</span>
-                            <span class="skill-tag">HTML</span>
-                            <span class="skill-tag">CSS</span>
+                            <!-- <span class="skill-tag">HTML</span>
+                            <span class="skill-tag">CSS</span> -->
                             <span class="skill-tag">SQL</span>
                             <span class="skill-tag">Dart</span>
                         </div>
                     </div>
-                    <div class="skill-category">
+                    <div class="skill-category reveal reveal-delay-2">
                         <div class="skill-category-header">
                             <div class="skill-category-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -178,7 +241,7 @@
                             <span class="skill-tag">MongoDB</span>
                         </div>
                     </div>
-                    <div class="skill-category">
+                    <div class="skill-category reveal reveal-delay-3">
                         <div class="skill-category-header">
                             <div class="skill-category-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -202,13 +265,20 @@
                 </div>
             </div>
         </section>
+
+        <div class="section-divider"></div>
+
+        <!-- Contact Section -->
         <section id="contact" class="contact-section">
             <div class="container">
-                <h2>ติดต่อ</h2>
+                <div class="section-header reveal">
+                    <h2>ติดต่อ</h2>
+                    <p>ช่องทางการติดต่อของผม</p>
+                </div>
                 <div class="contact-grid">
-                    <div class="contact-item">
+                    <div class="contact-item reveal reveal-delay-1">
                         <div class="contact-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                 fill="currentColor">
                                 <path
                                     d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z" />
@@ -218,7 +288,7 @@
                             <h3 class="contact-label">Discord</h3>
                             <p class="contact-value" data-copy="cat_sama">cat_sama</p>
                         </div>
-                        <button class="copy-btn" onclick="copyToClipboard('cat_sama', this)">
+                        <button class="copy-btn" id="copyDiscord" onclick="copyToClipboard('cat_sama', this)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
@@ -227,9 +297,9 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="contact-item">
+                    <div class="contact-item reveal reveal-delay-2">
                         <div class="contact-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
                                 <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -240,7 +310,8 @@
                             <h3 class="contact-label">Email</h3>
                             <p class="contact-value" data-copy="songrit208133@gmail.com">songrit208133@gmail.com</p>
                         </div>
-                        <button class="copy-btn" onclick="copyToClipboard('songrit208133@gmail.com', this)">
+                        <button class="copy-btn" id="copyEmail"
+                            onclick="copyToClipboard('songrit208133@gmail.com', this)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
@@ -249,9 +320,9 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="contact-item">
+                    <div class="contact-item reveal reveal-delay-3">
                         <div class="contact-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                 fill="currentColor">
                                 <path
                                     d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.877v-6.99H8.898v-2.89h1.54V9.797c0-1.522.857-2.366 2.173-2.366c.63 0 1.289.112 1.289.112v1.417h-.725c-.715 0-.937.445-.937.901v1.089h1.594l-.255 2.89h-1.339v6.99C18.343 21.128 22 16.991 22 12z" />
@@ -259,12 +330,12 @@
                         </div>
                         <div class="contact-info">
                             <h3 class="contact-label">Facebook</h3>
-                            <p class="contact-value" data-copy="https://www.facebook.com/cha.thiy.khimuk.705987/">ชาไทย
-                                ไข่มุก</p>
+                            <p class="contact-value" data-copy="https://www.facebook.com/cha.thiy.khimuk.705987/">
+                                ชาไทย ไข่มุก</p>
                         </div>
-                        <button class="copy-btn"
+                        <button class="copy-btn" id="openFacebook"
                             onclick="window.open('https://www.facebook.com/cha.thiy.khimuk.705987/', '_blank')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
                                 <path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -273,9 +344,9 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="contact-item">
+                    <div class="contact-item reveal reveal-delay-4">
                         <div class="contact-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                 fill="currentColor">
                                 <path
                                     d="M7 2C4.243 2 2 4.243 2 7v10c0 2.757 2.243 5 5 5h10c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5H7zm8 4a1 1 0 110 2 1 1 0 010-2zm-3 1.5A4.5 4.5 0 106 12a4.5 4.5 0 006-4.5z" />
@@ -285,9 +356,9 @@
                             <h3 class="contact-label">Instagram</h3>
                             <p class="contact-value" data-copy="https://www.instagram.com/songrit_208/">songrit_208</p>
                         </div>
-                        <button class="copy-btn"
+                        <button class="copy-btn" id="openInstagram"
                             onclick="window.open('https://www.instagram.com/songrit_208/', '_blank')">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round">
                                 <path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
@@ -297,14 +368,9 @@
                         </button>
                     </div>
                 </div>
+            </div>
         </section>
     </main>
-
-    <!-- <footer>
-        <div class="container">
-            <p>เว็พนี้ใช้Ai สร้าง 80%</p>
-        </div>
-    </footer> -->
 
     <!-- Activate Windows Watermark -->
     <div class="activate-windows">

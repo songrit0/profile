@@ -1,3 +1,7 @@
+/* =========================================
+   Random System — Premium Script
+   ========================================= */
+
 // Random System
 const items = [];
 let isSpinning = false;
@@ -97,7 +101,7 @@ function generateRollerItems(winningItem = null) {
     track.innerHTML = '';
 
     if (items.length === 0) {
-        track.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: rgba(255,255,255,0.6); font-family: \'Chakra Petch\', sans-serif;">เพิ่มไอเทมเพื่อเริ่มใช้งาน</div>';
+        track.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: rgba(255,255,255,0.5); font-family: \'Chakra Petch\', sans-serif; font-size: 0.95rem;">เพิ่มไอเทมเพื่อเริ่มใช้งาน</div>';
         return;
     }
 
@@ -106,7 +110,6 @@ function generateRollerItems(winningItem = null) {
     for (let i = 0; i < 50; i++) {
         let itemToUse;
 
-        // วางไอเทมที่ชนะไว้ที่ตำแหน่งเดียวที่ indicator ชี้
         if (winningItem && i === winningIndex) {
             itemToUse = winningItem;
         } else {
@@ -123,8 +126,8 @@ function spin() {
 
     if (items.length === 0) {
         const resultDisplay = document.getElementById('resultDisplay');
-        resultDisplay.innerHTML = '<p style="color: #ec4899;">กรุณาเพิ่มไอเทมก่อนสุ่ม!</p>';
-        setTimeout(function() {
+        resultDisplay.innerHTML = '<p style="color: #f87171;">กรุณาเพิ่มไอเทมก่อนสุ่ม!</p>';
+        setTimeout(function () {
             resultDisplay.innerHTML = '<p>กดปุ่ม Spin เพื่อสุ่ม!</p>';
         }, 2000);
         return;
@@ -145,17 +148,16 @@ function spin() {
     track.style.transition = 'none';
     track.style.transform = 'translateX(0)';
 
-    // เลือกผลลัพธ์ก่อน (สุ่มครั้งเดียว)
+    // Choose result
     const winningItem = items[Math.floor(Math.random() * items.length)];
 
-    // สร้าง roller items พร้อมวางไอเทมที่ชนะไว้ที่ตำแหน่งที่ถูกต้อง
+    // Generate roller items with winning item at position
     generateRollerItems(winningItem);
 
     setTimeout(function () {
         const winningIndex = 25;
         const rollerItems = track.querySelectorAll('.roller-item');
 
-        // วัด width จริงของ item (รวม margin ทั้งซ้ายและขวา)
         const firstItem = rollerItems[0];
         const itemWidth = firstItem.getBoundingClientRect().width;
         const itemStyle = window.getComputedStyle(firstItem);
@@ -163,21 +165,14 @@ function spin() {
         const marginRight = parseFloat(itemStyle.marginRight);
         const totalItemWidth = itemWidth + marginLeft + marginRight;
 
-        // ดึง padding ของ track (padding: 0 50%)
         const trackStyle = window.getComputedStyle(track);
         const trackPaddingLeft = parseFloat(trackStyle.paddingLeft);
 
-        // ใช้ container width จริง
         const containerCenter = wrapper.offsetWidth / 2;
 
-        // คำนวณตำแหน่งของไอเทมที่ชนะ (นับจาก edge ซ้ายของ track รวม padding)
-        // ตำแหน่งกึ่งกลางของไอเทมที่ชนะ = paddingLeft + (winningIndex * itemWidth) + (itemWidth / 2)
         const itemCenterPosition = trackPaddingLeft + (winningIndex * totalItemWidth) + (totalItemWidth / 2);
-
-        // offset ที่ต้องเลื่อน = ตำแหน่งกึ่งกลาง container - ตำแหน่งกึ่งกลางของไอเทม
         const offset = containerCenter - itemCenterPosition;
 
-        // เริ่มการหมุน
         track.style.transition = 'transform 5s cubic-bezier(0.25, 0.1, 0.25, 1)';
         track.style.transform = `translateX(${offset}px)`;
 
@@ -195,13 +190,115 @@ function spin() {
     }, 100);
 }
 
-// Theme Switcher
+/* === Particle Background === */
+function initParticles() {
+    const canvas = document.getElementById('particleCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animationId;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    class Particle {
+        constructor() {
+            this.reset();
+        }
+
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.5 + 0.5;
+            this.speedX = (Math.random() - 0.5) * 0.3;
+            this.speedY = (Math.random() - 0.5) * 0.3;
+            this.opacity = Math.random() * 0.4 + 0.1;
+            this.fadeDirection = Math.random() > 0.5 ? 1 : -1;
+            this.fadeSpeed = Math.random() * 0.005 + 0.002;
+        }
+
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            this.opacity += this.fadeDirection * this.fadeSpeed;
+
+            if (this.opacity >= 0.5) this.fadeDirection = -1;
+            if (this.opacity <= 0.05) this.fadeDirection = 1;
+
+            if (this.x < 0 || this.x > canvas.width ||
+                this.y < 0 || this.y > canvas.height) {
+                this.reset();
+            }
+        }
+
+        draw() {
+            const style = getComputedStyle(document.body);
+            const primaryLight = style.getPropertyValue('--primary-light').trim();
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${primaryLight}, ${this.opacity})`;
+            ctx.fill();
+        }
+    }
+
+    const particleCount = Math.min(50, Math.floor((canvas.width * canvas.height) / 30000));
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+    }
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(p => {
+            p.update();
+            p.draw();
+        });
+
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 120) {
+                    const style = getComputedStyle(document.body);
+                    const primaryLight = style.getPropertyValue('--primary-light').trim();
+                    const opacity = (1 - dist / 120) * 0.06;
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(${primaryLight}, ${opacity})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        animationId = requestAnimationFrame(animate);
+    }
+
+    animate();
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) {
+            cancelAnimationFrame(animationId);
+        } else {
+            animate();
+        }
+    });
+}
+
+/* === Theme Switcher === */
 function initThemeSwitcher() {
-    // Load saved theme or default to blue
     const savedTheme = localStorage.getItem('theme') || 'blue';
     setTheme(savedTheme);
 
-    // Add click handlers to theme options
     const themeOptions = document.querySelectorAll('.theme-option');
     themeOptions.forEach(option => {
         option.addEventListener('click', function () {
@@ -213,10 +310,8 @@ function initThemeSwitcher() {
 }
 
 function setTheme(theme) {
-    // Set theme attribute on body
     document.body.setAttribute('data-theme', theme);
 
-    // Update active state on theme options
     const themeOptions = document.querySelectorAll('.theme-option');
     themeOptions.forEach(option => {
         if (option.getAttribute('data-theme') === theme) {
@@ -226,7 +321,6 @@ function setTheme(theme) {
         }
     });
 
-    // Update theme button title
     const themeBtn = document.querySelector('.theme-btn');
     const themeNames = {
         'purple': 'สีม่วง',
@@ -242,10 +336,91 @@ function setTheme(theme) {
     }
 }
 
+/* === Mobile Menu === */
+function initMobileMenu() {
+    const hamburger = document.getElementById('hamburgerBtn');
+    const navMenu = document.getElementById('navMenu');
+    const overlay = document.getElementById('navOverlay');
+
+    if (!hamburger || !navMenu) return;
+
+    hamburger.addEventListener('click', function () {
+        this.classList.toggle('active');
+        navMenu.classList.toggle('active');
+        if (overlay) overlay.classList.toggle('active');
+        document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+    });
+
+    if (overlay) {
+        overlay.addEventListener('click', closeMobileMenu);
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeMobileMenu();
+    });
+}
+
+function closeMobileMenu() {
+    const hamburger = document.getElementById('hamburgerBtn');
+    const navMenu = document.getElementById('navMenu');
+    const overlay = document.getElementById('navOverlay');
+
+    if (hamburger) hamburger.classList.remove('active');
+    if (navMenu) navMenu.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+/* === Header Scroll Effect === */
+function initHeaderScroll() {
+    const header = document.getElementById('siteHeader');
+    if (!header) return;
+
+    let ticking = false;
+
+    window.addEventListener('scroll', function () {
+        if (!ticking) {
+            requestAnimationFrame(function () {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+}
+
+/* === Scroll Reveal === */
+function initScrollReveal() {
+    const revealElements = document.querySelectorAll('.reveal');
+
+    if (!revealElements.length) return;
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    revealElements.forEach(el => observer.observe(el));
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', function () {
-    // Initialize theme switcher
+    initParticles();
     initThemeSwitcher();
+    initMobileMenu();
+    initHeaderScroll();
+    initScrollReveal();
 
     loadItems();
     displayItems();
@@ -314,10 +489,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (newItem.icon && newItem.name) {
                 if (editingIndex >= 0) {
-                    // Edit existing item
                     items[editingIndex] = newItem;
                 } else {
-                    // Add new item
                     items.push(newItem);
                 }
 
