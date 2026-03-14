@@ -530,7 +530,7 @@ function initStickers() {
         }
     });
 
-    function placeSticker(content, x, y, targetArea = document.body, isText = false, textStyle = 'box') {
+    function placeSticker(content, x, y, targetArea = document.body, isText = false, textStyle = 'box', loadedData = null) {
         const element = document.createElement('div');
         element.className = 'PlacedSticker slap';
 
@@ -580,35 +580,51 @@ function initStickers() {
             element.appendChild(img);
         }
 
-        const rotation = (Math.random() - 0.5) * 60;
+        const rotation = loadedData ? loadedData.rotation : (Math.random() - 0.5) * 60;
+        const scale = loadedData ? loadedData.scale : currentScale;
         element.style.setProperty('--r', `${rotation}deg`);
-        element.style.setProperty('--scale', currentScale);
+        element.style.setProperty('--scale', scale);
 
-        // Use percentage positioning relative to targetArea
-        const rect = targetArea.getBoundingClientRect();
-        const relX = x - (rect.left + window.scrollX);
-        const relY = y - (rect.top + window.scrollY);
-
-        const percX = (relX / rect.width) * 100;
-        const percY = (relY / rect.height) * 100;
+        let percX, percY;
+        if (loadedData) {
+            percX = loadedData.left;
+            percY = loadedData.top;
+        } else {
+            const rect = targetArea.getBoundingClientRect();
+            const relX = x - (rect.left + window.scrollX);
+            const relY = y - (rect.top + window.scrollY);
+            percX = (relX / rect.width) * 100;
+            percY = (relY / rect.height) * 100;
+        }
 
         element.style.left = `${percX}%`;
         element.style.top = `${percY}%`;
 
         if (!isText) element.style.height = '90px';
-        element.style.zIndex = ++highestZIndex;
+
+        if (loadedData) {
+            element.style.zIndex = loadedData.zIndex;
+            highestZIndex = Math.max(highestZIndex, loadedData.zIndex);
+        } else {
+            element.style.zIndex = ++highestZIndex;
+        }
 
         targetArea.appendChild(element);
 
-        const slapTimeout = setTimeout(() => {
-            if (!element.dataset.isDragging) {
-                element.classList.remove('slap');
-                // Use translate(-50%, -50%) to ensure left/top refers to the center
-                const scale = element.style.getPropertyValue('--scale') || 0.35;
-                element.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
-            }
-        }, 300);
-        element.dataset.slapTimeout = slapTimeout;
+        if (loadedData) {
+            element.dataset.firebaseId = loadedData.id;
+            element.classList.remove('slap');
+            element.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
+        } else {
+            const slapTimeout = setTimeout(() => {
+                if (!element.dataset.isDragging) {
+                    element.classList.remove('slap');
+                    element.style.transform = `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`;
+                }
+            }, 300);
+            element.dataset.slapTimeout = slapTimeout;
+            saveStickerToFirebase(element, targetArea.id, isText, content, textStyle, percX, percY, rotation, scale, highestZIndex);
+        }
 
         makeDraggable(element);
     }
@@ -617,6 +633,7 @@ function initStickers() {
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
         let currentRotation = parseFloat(element.style.getPropertyValue('--r')) || 0;
+        let wheelSaveTimeout;
 
         const dragStart = (e) => {
             if (e.target.classList.contains('peel')) return;
@@ -675,6 +692,16 @@ function initStickers() {
             const baseScale = parseFloat(element.style.getPropertyValue('--scale')) || 0.35;
             const grabScale = baseScale * 1.45;
             element.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg) scale(${grabScale})`;
+
+            clearTimeout(wheelSaveTimeout);
+            wheelSaveTimeout = setTimeout(() => {
+                if (element.dataset.firebaseId && window._stickerDB) {
+                    window._stickerDB.update(element.dataset.firebaseId, {
+                        rotation: currentRotation,
+                        scale: parseFloat(element.style.getPropertyValue('--scale')) || 0.35
+                    }).catch(err => console.error('Firebase update error:', err));
+                }
+            }, 600);
         };
 
         const dragMove = (e) => {
@@ -714,6 +741,15 @@ function initStickers() {
             const baseScale = element.style.getPropertyValue('--scale') || 0.35;
             element.style.transform = `translate(-50%, -50%) rotate(${currentRotation}deg) scale(${baseScale})`;
 
+            if (element.dataset.firebaseId && window._stickerDB) {
+                window._stickerDB.update(element.dataset.firebaseId, {
+                    left: pLeft,
+                    top: pTop,
+                    rotation: currentRotation,
+                    scale: parseFloat(baseScale) || 0.35
+                }).catch(err => console.error('Firebase update error:', err));
+            }
+
             hideDroppableAreas();
 
             document.removeEventListener('mousemove', dragMove);
@@ -728,8 +764,55 @@ function initStickers() {
 
         // Double click/tap to remove with "Peel" animation
         element.addEventListener('dblclick', () => {
+            const fbId = element.dataset.firebaseId;
             element.classList.add('peel');
-            setTimeout(() => element.remove(), 400);
+            setTimeout(() => {
+                element.remove();
+                if (fbId && window._stickerDB) {
+                    window._stickerDB.delete(fbId).catch(err => console.error('Firebase delete error:', err));
+                }
+            }, 400);
         });
     }
+
+    async function saveStickerToFirebase(element, areaId, isText, content, textStyle, left, top, rotation, scale, zIndex) {
+        if (!window._stickerDB) return;
+        try {
+            const id = await window._stickerDB.save({
+                type: isText ? 'text' : 'image',
+                content: isText ? content : null,
+                src: !isText ? content : null,
+                style: isText ? textStyle : null,
+                areaId, left, top, rotation, scale, zIndex
+            });
+            element.dataset.firebaseId = id;
+        } catch (err) {
+            console.error('Firebase save error:', err);
+        }
+    }
+
+    async function loadStickers() {
+        if (!window._stickerDB) return;
+        try {
+            const stickers = await window._stickerDB.loadAll();
+            stickers.sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+            stickers.forEach(data => {
+                const area = document.getElementById(data.areaId);
+                if (!area) return;
+                placeSticker(
+                    data.type === 'text' ? data.content : data.src,
+                    0, 0, area,
+                    data.type === 'text',
+                    data.style || 'box',
+                    data
+                );
+            });
+        } catch (err) {
+            console.error('Firebase load error:', err);
+        }
+    }
+
+    window._onFirebaseReady = loadStickers;
+    if (window._stickerDB) loadStickers();
+
 }

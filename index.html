@@ -41,7 +41,7 @@
     <main>
         <!-- Hero Section -->
         <section id="home" class="hero">
-            <div class="container hero-container sticker-area">
+            <div class="container hero-container sticker-area" id="heroArea">
                 <div class="hero-huge-text-wrapper"
                     style="position: relative; width: 100%; min-height: clamp(8rem, 15vw, 18rem); display: flex; align-items: center;">
                     <div class="hero-huge-text" id="shatterText"
@@ -88,7 +88,7 @@
                     <h3 class="section-title">About Me<span class="sup">(1)</span></h3>
                 </div>
 
-                <div class="grid-display sticker-area">
+                <div class="grid-display sticker-area" id="aboutArea">
                     <div class="grid-item">
                         <div class="grid-content">
                             <span class="mono-label">Name</span>
@@ -131,7 +131,7 @@
                     <h3 class="section-title">Tech Stack<span class="sup">(2)</span></h3>
                 </div>
 
-                <div class="timeline-list sticker-area">
+                <div class="timeline-list sticker-area" id="expertiseArea">
                     <div class="timeline-item">
                         <div class="t-left">
                             <span class="t-number">)1</span>
@@ -203,7 +203,7 @@
         <!-- Contact Section -->
         <section id="contact" class="contact">
             <div class="container">
-                <div class="contact-center sticker-area">
+                <div class="contact-center sticker-area" id="contactArea">
                     <div class="triangle-logo noise-effect"></div>
                     <h2>แมวเป้า.dev <span class="badge">24</span></h2>
                 </div>
@@ -279,7 +279,48 @@
         <img src="sticker/sticker_12.webp" class="t-sticker" data-src="sticker/sticker_12.webp">
         <img src="sticker/sticker_13.webp" class="t-sticker" data-src="sticker/sticker_13.webp">
     </div>
-    <script script src="script.js">
+    <script src="script.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
+        import { getDatabase, ref, push, update, remove, get } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBTHeRHBGsqenN-FnOWjfXNbrBXaE1JkQE",
+            authDomain: "sticker-eb8ce.firebaseapp.com",
+            projectId: "sticker-eb8ce",
+            storageBucket: "sticker-eb8ce.firebasestorage.app",
+            messagingSenderId: "6182473092",
+            appId: "1:6182473092:web:0856c84ddd3b822200e1d1",
+            measurementId: "G-3QTWSKEGNP",
+            databaseURL: "https://sticker-eb8ce-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getDatabase(app);
+
+        window._stickerDB = {
+            async save(data) {
+                const newRef = push(ref(db, 'stickers'), data);
+                return newRef.key;
+            },
+            async update(id, data) {
+                await update(ref(db, `stickers/${id}`), data);
+            },
+            async delete(id) {
+                await remove(ref(db, `stickers/${id}`));
+            },
+            async loadAll() {
+                const snap = await get(ref(db, 'stickers'));
+                const val = snap.val();
+                return val ? Object.entries(val).map(([id, data]) => ({ id, ...data })) : [];
+            }
+        };
+
+        if (typeof window._onFirebaseReady === 'function') {
+            window._onFirebaseReady();
+        }
     </script>
 </body>
 
